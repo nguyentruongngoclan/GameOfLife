@@ -26,7 +26,7 @@ int countLiveStatus(set<pair<int,int>>& liveCells, int row, int col){
 		int checkRow = row + direction.first; 
 		int checkCol = col + direction.second;
 		if (
-			checkRow > INT_MIN
+			checkRow >= INT_MIN
 			&& checkRow < INT_MAX
 			&& checkCol >= INT_MIN
 			&& checkCol < INT_MAX) {
@@ -52,7 +52,7 @@ set<pair<int,int>> getCandidateNonLiveCells(set<pair<int,int>> &liveCells) {
 			int checkRow = liveCell.first + direction.first; 
 			int checkCol = liveCell.second + direction.second;
 			if (			
-				checkRow > INT_MIN
+				checkRow >= INT_MIN
 				&& checkRow < INT_MAX
 				&& checkCol >= INT_MIN
 				&& checkCol < INT_MAX 
