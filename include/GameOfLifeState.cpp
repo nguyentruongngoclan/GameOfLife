@@ -62,7 +62,7 @@ int GameOfLifeState::countLiveStatus(int row, int col){
 	return count;
 }
 
-void GameOfLifeState::Tick() {
+void GameOfLifeState::tick() {
 	// 1. Allocate newLiveCells representing the new tick's live cells. liveCells_ is considered past tick's live cell
 	// 2. Grab a new list of candidate non-live cells to check against as they are candidate to be modified
 	// 3. For each candidate cells:
@@ -87,7 +87,6 @@ void GameOfLifeState::Tick() {
 		if (liveCount == 3) {
 			// 3.c
 			newLiveCells.insert(nonLiveCandidateCell);
-			std::cout << "(" << nonLiveCandidateCell.first << "," << nonLiveCandidateCell.second << ")";
 		}
 	}
 	// 4.
@@ -98,16 +97,14 @@ void GameOfLifeState::Tick() {
 		if (liveCount == 2 || liveCount == 3) {
 			// 4.c
 			newLiveCells.insert(pastTickLiveCell);
-			std::cout << "(" << pastTickLiveCell.first << "," << pastTickLiveCell.second << ")";
 		}
 		// Otherwise the cell is considered dead and not added into the next tick
 	}
-	std::cout << std::endl;
 	// 5.
 	liveCells_ = newLiveCells;
 }
 
-void GameOfLifeState::PrintState() {
+void GameOfLifeState::printState() {
 	std::cout << "#Life 1.06" << std::endl;
 	for (const auto& liveCell : liveCells_) {
 		std::cout << liveCell.first << " " << liveCell.second << std::endl;

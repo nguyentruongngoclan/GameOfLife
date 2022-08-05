@@ -19,10 +19,10 @@ class GameOfLifeState {
 		GameOfLifeState(std::set<std::pair<int,int>> liveCells) : liveCells_(liveCells) {};
 
 		// Advance the game of life to the next state
-		void Tick();
+		void tick();
 		
 		// Prints the state of the game of life in 1.06 format
-		void PrintState();
+		void printState();
 	private:
 		// Retrieves all non-live cells adjacent to the current live cells
 		std::set<std::pair<int,int>> getCandidateNonLiveCells();
