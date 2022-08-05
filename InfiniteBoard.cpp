@@ -17,12 +17,20 @@ constexpr pair<int,int> directions[8] = {
 	{1, 0}, // bottom
 	{1, 1}, // bottom-right
 };
+// return true if row and col + direction lies within boundary
+bool isWithinBoundary(int row, int col, pair<int,int> direction) {
+	if (row == INT_MIN && direction.first == -1) return false;
+	if (col == INT_MIN && direction.second == -1) return false;
+	if (row == INT_MAX && direction.first == 1) return false;
+	if (col == INT_MAX && direction.second == 1) return false;
+	return true;
+}
 
 int countLiveStatus(set<pair<int,int>>& liveCells, int row, int col){
 	int count = 0;	
 	for (const auto& direction : directions) {
 		// For each direction wrt current (row,col), check their status (live/dead) and increment count if found a live		
-		// TODO: Check for overflows before computing checkRow & checkColumn
+		if (!isWithinBoundary(row,col,direction)) continue;
 		int checkRow = row + direction.first; 
 		int checkCol = col + direction.second;
 		if (
