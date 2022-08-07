@@ -15,27 +15,27 @@ namespace {
 		{1, 1}, // bottom-right
 	};
 	// Check if there're potential overflow before applying direction to the current row / col
-	bool isWithinBoundary(int row, int col, std::pair<int,int> direction) {
-		if (row == INT_MIN && direction.first == -1) return false;
-		if (col == INT_MIN && direction.second == -1) return false;
-		if (row == INT_MAX && direction.first == 1) return false;
-		if (col == INT_MAX && direction.second == 1) return false;
+	bool isWithinBoundary(long long row, long long col, std::pair<int, int> direction) {
+		if (row == LLONG_MIN && direction.first == -1) return false;
+		if (col == LLONG_MIN && direction.second == -1) return false;
+		if (row == LLONG_MAX && direction.first == 1) return false;
+		if (col == LLONG_MAX && direction.second == 1) return false;
 		return true;
 	}
 }
 
 // Retrieves all non-live cells adjacent to the current live cells
-std::set<std::pair<int,int>> GameOfLifeState::getCandidateNonLiveCells() {
+std::set<Coordinate> GameOfLifeState::getCandidateNonLiveCells() {
 	// We only care about cells that have have at least 1 neighbor live cells
 	// and doesn't really need to scan a full board, which is very slow with infinite board
 	
-	std::set<std::pair<int,int>> candidateCells = {};
+	std::set<Coordinate> candidateCells = {};
 	for (const auto &liveCell : liveCells_) {
 		for (const auto& direction : directions) {
 			// For each direction wrt current liveCell, add all its neighbor non-live, if not out of bound
 			// TODO: Check for overflows before computing checkRow & checkColumn
-			int checkRow = liveCell.first + direction.first; 
-			int checkCol = liveCell.second + direction.second;
+			long long checkRow = liveCell.first + direction.first; 
+			long long checkCol = liveCell.second + direction.second;
 			if (
 				liveCells_.find({checkRow, checkCol}) == liveCells_.end() // is not a live cell
 			) {
@@ -46,13 +46,13 @@ std::set<std::pair<int,int>> GameOfLifeState::getCandidateNonLiveCells() {
 	return candidateCells;
 }
 
-int GameOfLifeState::countLiveStatus(int row, int col){
+int GameOfLifeState::countLiveStatus(long long row, long long col){
 	int count = 0;	
 	for (const auto& direction : directions) {
 		// For each direction wrt current (row,col), check their status (live/dead) and increment count if found a live		
 		if (!isWithinBoundary(row,col,direction)) continue;
-		int checkRow = row + direction.first; 
-		int checkCol = col + direction.second;
+		long long checkRow = row + direction.first; 
+		long long checkCol = col + direction.second;
 
 		// Increment count if (checkRow,checkCol) belongs to liveCells
 		if (liveCells_.find({checkRow,checkCol}) != liveCells_.end()) {
@@ -76,23 +76,26 @@ void GameOfLifeState::tick() {
 	// 5. Assign newLiveCells to liveCells
 	
 	// 1.
-	std::set<std::pair<int,int>> newLiveCells = {};
+	std::set<Coordinate> newLiveCells = {};
 	// 2
 	const auto nonLiveCandidateCells = getCandidateNonLiveCells();
 	// 3.
 	for (const auto& nonLiveCandidateCell : nonLiveCandidateCells) {
 		//	3.a
-		int liveCount = countLiveStatus(nonLiveCandidateCell.first, nonLiveCandidateCell.second);
+		const auto liveCount = countLiveStatus(nonLiveCandidateCell.first, nonLiveCandidateCell.second);
 		//	3.b
 		if (liveCount == 3) {
 			// 3.c
 			newLiveCells.insert(nonLiveCandidateCell);
 		}
+		else {
+
+		}
 	}
 	// 4.
 	for (const auto& pastTickLiveCell : liveCells_) {
 		// 4.a
-		int liveCount = countLiveStatus(pastTickLiveCell.first, pastTickLiveCell.second);
+		const auto liveCount = countLiveStatus(pastTickLiveCell.first, pastTickLiveCell.second);
 		// 4.b
 		if (liveCount == 2 || liveCount == 3) {
 			// 4.c
@@ -104,9 +107,9 @@ void GameOfLifeState::tick() {
 	liveCells_ = newLiveCells;
 }
 
-void GameOfLifeState::printState() {
-	std::cout << "#Life 1.06" << std::endl;
+void GameOfLifeState::printState(std::ostream& ostream) {
+	ostream << "#Life 1.06" << std::endl;
 	for (const auto& liveCell : liveCells_) {
-		std::cout << liveCell.first << " " << liveCell.second << std::endl;
-	}
+		ostream << liveCell.first << " " << liveCell.second << std::endl;		
+	}	
 }
